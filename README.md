@@ -1,3 +1,31 @@
+THREAD: When is laundry actually free in the dorms?
+
+--- reply 1 (27 votes) ---
+Tuesday and Wednesday mornings, every building. Sunday evening is the worst and it isn't close.
+
+--- reply 2 (8 votes) ---
+Depends heavily on your building. Morrow has more machines per person than Fenwick so it's less of a problem there.
+
+--- reply 3 (16 votes) ---
+The app that shows machine availability is wrong about half the time. It reports a machine as free for a few minutes after it finishes but before someone unloads it.
+
+THREAD: What do you wish you'd known in first year?
+
+--- reply 1 (41 votes) ---
+That the add/drop deadline and the withdrawal deadline are different dates and only one of them is on the calendar everyone reads.
+
+--- reply 2 (28 votes) ---
+That you can take a course pass/fail and declare it late — up to week eight. I carried a grade I didn't need to.
+
+--- reply 3 (35 votes) ---
+That the writing centre will read a draft for any course, not just writing courses. Free, and the appointments go unbooked.
+
+--- reply 4 (52 votes) ---
+Honestly: that nobody is watching as closely as you think. I spent a year worried about looking like I knew what I was doing.
+
+--- reply 5 (17 votes) ---
+That your adviser's job is partly to know the exceptions to rules. Ask before assuming a deadline is fixed.
+
 # The Unofficial Guide
 
 <!-- Replace this line with your name and which corpus you picked. -->
@@ -29,7 +57,7 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
+**Chunk size:  26**
 **Overlap:**
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
@@ -53,29 +81,85 @@
 
      Milestone 3. -->
 
-**Chunk 1** — source: `` — produced by: ``
+**Chunk 1** — source: ``— produced by:``0.6
 
 ```
+THREAD: Is a bike worth it for a 20 minute walk commute?
+
+--- reply 1 (14 votes) ---
+Yeah. Cuts an 18 minute walk to about 6. The thing nobody mentions is storage — covered bike parking exists at three buildings and is full by 9am at all three.
+
+--- reply 2 (9 votes) ---
+Counterpoint, I sold mine. Between November and March the paths are either icy or salted and salt destroys a drivetrain in one season.
+
+--- reply 3 (22 votes) ---
+Both true. I keep a cheap bike for September to November and walk the rest of the year. Total cost was about $120 for the bike and I don't care what happens to it.
+
+--- reply 4 (5 votes) ---
+If you do get one, the campus does free registration and it's the only reason I got mine back after it was taken.
 ```
 
-**Chunk 2** — source: `` — produced by: ``
+**Chunk 2** — source: ``— produced by:``1
 
 ```
+THREAD: What do you wish you'd known in first year?
+
+--- reply 1 (41 votes) ---
+That the add/drop deadline and the withdrawal deadline are different dates and only one of them is on the calendar everyone reads.
+
+--- reply 2 (28 votes) ---
+That you can take a course pass/fail and declare it late — up to week eight. I carried a grade I didn't need to.
+
+--- reply 3 (35 votes) ---
+That the writing centre will read a draft for any course, not just writing courses. Free, and the appointments go unbooked.
+
+--- reply 4 (52 votes) ---
+Honestly: that nobody is watching as closely as you think. I spent a year worried about looking like I knew what I was doing.
+
+--- reply 5 (17 votes) ---
+That your adviser's job is partly to know the exceptions to rules. Ask before assuming a deadline is fixed.
 ```
 
-**Chunk 3** — source: `` — produced by: ``
+**Chunk 3** — source: ``— produced by:``0.4
 
 ```
+THREAD: When is laundry actually free in the dorms?
+
+--- reply 1 (27 votes) ---
+Tuesday and Wednesday mornings, every building. Sunday evening is the worst and it isn't close.
+
+--- reply 2 (8 votes) ---
+Depends heavily on your building. Morrow has more machines per person than Fenwick so it's less of a problem there.
+
+--- reply 3 (16 votes) ---
+The app that shows machine availability is wrong about half the time. It reports a machine as free for a few minutes after it finishes but before someone unloads it.
 ```
 
-**Chunk 4** — source: `` — produced by: ``
+**Chunk 4** — source: ``— produced by:``0.2
 
 ```
+THREAD: Is the printing quota enough?
+
+--- reply 1 (17 votes) ---
+For most people yes. $30 is about 600 pages black and white. It's the colour printing that eats it — eight times the cost per page.
+
+--- reply 2 (11 votes) ---
+Doesn't roll over between semesters. Print your readings in December rather than losing it.
 ```
 
-**Chunk 5** — source: `` — produced by: ``
+**Chunk 5** — source: ``— produced by:``0.6
 
 ```
+THREAD: Roommate situation isn't working. What now?
+
+--- reply 1 (28 votes) ---
+Talk to your RA early, and frame it as 'we need help sorting this out' rather than 'move me'. Room changes are possible but the process starts with mediation and skipping that step slows it down.
+
+--- reply 2 (14 votes) ---
+Room changes happen at the semester boundary almost always, and mid-semester only in fairly serious cases.
+
+--- reply 3 (33 votes) ---
+Write down specifics before the meeting. 'It's not working' is hard to act on; 'guests four nights a week past 2am' is not.
 ```
 
 ## Sample Answer
@@ -102,8 +186,8 @@
      Milestone 4. -->
 
 | Question | In corpus? | Best distance |
-|---|---|---|
-|  |  |  |
+| -------- | ---------- | ------------- |
+|          |            |               |
 
 ## How I Used AI
 
@@ -145,13 +229,13 @@
 
      Milestone 1. -->
 
-| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
-|---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
+| -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
+| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
+| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
+| 4.                                     |        |       |       |       |         |
+| 5.                                     |        |       |       |       |         |
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
@@ -169,12 +253,12 @@
      Milestone 2. -->
 
 | # | Criterion | Verdict | How I decided |
-|---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| - | --------- | ------- | ------------- |
+| 1 |           |         |               |
+| 2 |           |         |               |
+| 3 |           |         |               |
+| 4 |           |         |               |
+| 5 |           |         |               |
 
 ## Diagnoses
 
@@ -210,13 +294,13 @@
 <!-- Same format, same five criteria, three runs each.
      `python run_eval.py --label after` -->
 
-| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
-|---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
+| -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
+| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
+| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
+| 4.                                     |        |       |       |       |         |
+| 5.                                     |        |       |       |       |         |
 
 **Did it help?**
 
