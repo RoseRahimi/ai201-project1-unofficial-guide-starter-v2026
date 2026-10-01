@@ -22,7 +22,7 @@ pipeline earns credit; *"80% seemed reasonable"* does not.
 For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
-**Why this target:**
+**Why this target:** tested all my 5 questions and each of them retrieves the right thread as the first result at distance of 0.26-0.40. because the corpus of advice threads has 23 threads and one chunck per topic. if a wording in question drifts then there is no second chunck to fall back on. 4 out of 5 lives room for one wording mismatch. 
 
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
@@ -33,7 +33,7 @@ contains the answer.
 
 Every answer the system produces names at least one source document.
 
-**Why this target:**
+**Why this target:** the pipeline attaches the source filename to every chunk before the model ever sees it, so naming a source doesn't depend on the model being smart, just on the plumbing working. that's why it's all 5 and not 4. if an answer comes back with no source it means my code dropped the label somewhere, not that I got unlucky.
 
 <!-- Why all five and not four? What about your setup makes that achievable —
      or what would have to go wrong for it not to be? -->
@@ -51,7 +51,7 @@ in at least 4 of 5 tries.
      what happened into your run log. Swap them for your own if you'd rather —
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
-**Why this target:**
+**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.79-0.93, so there was a clean gap between 0.40 and 0.79 with no overlap at all. I put the cutoff at 0.6 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.79) is not that far from the gap and a differently worded junk question could land closer.
 
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
@@ -60,7 +60,7 @@ in at least 4 of 5 tries.
 
 ## 4. Something about your chunks
 
-The minimal cutoff numerical number is 0.6 for retreived chuncks.
+Every chunk is one complete thread: it starts with a `THREAD:` title line and no reply is cut off mid sentence, in 5 of 5 sampled chunks.
 
 <!-- YOU WRITE THIS ONE.
 
@@ -74,11 +74,13 @@ The minimal cutoff numerical number is 0.6 for retreived chuncks.
        - "No chunk is shorter than 200 characters, since anything below that
           in my corpus turned out to be a heading with no content under it." -->
 
-**Why this target:**
+**Why this target:** when I looked at what the fallback chunker did to my corpus it cut replies in half at the 800 character mark, and one retrieved chunk literally started mid word ("t...."). the THREAD: title line is what carries the question that the replies are answering, so a chunk without it matches questions badly. it's 5 of 5 and not 4 of 5 because my chunker splits on thread boundaries, so if even one sampled chunk is broken that means the code is wrong, not that I got unlucky.
 
 ---
 
 ## 5. Your choice
+
+For questions whose thread contains conflicting replies, the answer reflects both positions instead of picking one, in at least 2 of 3 such test questions.
 
 <!-- YOU WRITE THIS ONE TOO.
 
@@ -88,7 +90,7 @@ The minimal cutoff numerical number is 0.6 for retreived chuncks.
      present — anything, as long as it names a number or an observable
      outcome. -->
 
-**Why this target:**
+**Why this target:** my corpus is advice threads and the replies disagree with each other on purpose. the bike thread has one reply saying yes get a bike, one saying no I sold mine, and one saying keep a cheap one for fall only. the honest answer is "it depends on the season" and the vote counts tempt the model to just crown the most upvoted reply as the winner. I picked 2 of 3 instead of 3 of 3 because in some threads one side is clearly fringe (like 5 votes against 31) and deciding whether the answer should still mention it is a judgment call I might score differently on different days.
 
 ---
 
