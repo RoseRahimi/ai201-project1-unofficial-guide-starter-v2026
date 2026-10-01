@@ -22,7 +22,7 @@ pipeline earns credit; *"80% seemed reasonable"* does not.
 For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
-**Why this target:** tested all my 5 questions and each of them retrieves the right thread as the first result at distance of 0.26-0.40. because the corpus of advice threads has 23 threads and one chunck per topic. if a wording in question drifts then there is no second chunck to fall back on. 4 out of 5 lives room for one wording mismatch. 
+**Why this target:** tested all my 5 questions and each of them retrieves the right thread as the first result at distance of 0.26-0.40. because the corpus of advice threads has 23 threads and one chunck per topic. if a wording in question drifts then there is no second chunck to fall back on. 4 out of 5 lives room for one wording mismatch.
 
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
@@ -51,7 +51,7 @@ in at least 4 of 5 tries.
      what happened into your run log. Swap them for your own if you'd rather —
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
-**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.79-0.93, so there was a clean gap between 0.40 and 0.79 with no overlap at all. I put the cutoff at 0.6 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.79) is not that far from the gap and a differently worded junk question could land closer.
+**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.83-0.95, so there was a clean gap between 0.40 and 0.83 with no overlap at all. I put the cutoff at 0.6 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.83) is still the nearest thing to the gap and a differently worded junk question could land closer.
 
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
