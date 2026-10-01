@@ -51,7 +51,7 @@ in at least 4 of 5 tries.
      what happened into your run log. Swap them for your own if you'd rather —
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
-**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.83-0.95, so there was a clean gap between 0.40 and 0.83 with no overlap at all. I put the cutoff at 0.6 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.83) is still the nearest thing to the gap and a differently worded junk question could land closer.
+**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.83-0.95, so there was a clean gap between 0.40 and 0.83 with no overlap at all. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.83) is still the nearest thing to the gap and a differently worded junk question could land closer.
 
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->

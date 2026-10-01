@@ -1,34 +1,6 @@
-THREAD: When is laundry actually free in the dorms?
-
---- reply 1 (27 votes) ---
-Tuesday and Wednesday mornings, every building. Sunday evening is the worst and it isn't close.
-
---- reply 2 (8 votes) ---
-Depends heavily on your building. Morrow has more machines per person than Fenwick so it's less of a problem there.
-
---- reply 3 (16 votes) ---
-The app that shows machine availability is wrong about half the time. It reports a machine as free for a few minutes after it finishes but before someone unloads it.
-
-THREAD: What do you wish you'd known in first year?
-
---- reply 1 (41 votes) ---
-That the add/drop deadline and the withdrawal deadline are different dates and only one of them is on the calendar everyone reads.
-
---- reply 2 (28 votes) ---
-That you can take a course pass/fail and declare it late — up to week eight. I carried a grade I didn't need to.
-
---- reply 3 (35 votes) ---
-That the writing centre will read a draft for any course, not just writing courses. Free, and the appointments go unbooked.
-
---- reply 4 (52 votes) ---
-Honestly: that nobody is watching as closely as you think. I spent a year worried about looking like I knew what I was doing.
-
---- reply 5 (17 votes) ---
-That your adviser's job is partly to know the exceptions to rules. Ask before assuming a deadline is fixed.
-
 # The Unofficial Guide
 
-<!-- Replace this line with your name and which corpus you picked. -->
+Fatima Rahimi, advice_threads corpus
 
 > **This file is your submission.** Fill it in as you go — most sections get
 > written during the milestone that produces them, not at the end.
@@ -49,26 +21,16 @@ That your adviser's job is partly to know the exceptions to rules. Ask before as
 
 ## What This Does
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
+This is a question answering system built on the advice_threads corpus, 23 forum threads where students answer each other's practical questions about campus life: laundry timing, laptop specs, meal plans, bike commuting, that kind of thing. You ask it a question, it finds the thread closest in meaning to your question, and a model writes a short answer from that thread only, naming the file it came from. If your question isn't something the threads cover, a relevance gate refuses to answer instead of letting the model make something up.
 
 ## Chunking Strategy
 
-**Chunk size:  26**
-**Overlap:**
+**Chunk size: one whole thread (317–793 characters)**
+**Overlap: none**
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
+Each file in my corpus is one thread: a `THREAD:` title that states the question, then the replies that answer it. The replies only make sense under the title. "Counterpoint, I sold mine" is useless without knowing the question was about bikes, so cutting anywhere inside a thread separates answers from their question. I measured the threads and the longest is 793 characters, under the embedding model's roughly 1000 character limit, so nothing needs splitting and one thread = one chunk.
 
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
-
-     Milestone 3. -->
+I changed my mind to get here. I first experimented with small fixed-size chunks through the fallback splitter, and when I looked at what retrieval brought back, some chunks were cut mid reply and one literally started mid word ("t...."). That's what convinced me the thread boundary is the only place a cut makes sense in this corpus. If a longer thread ever shows up, my plan is one chunk per reply with the `THREAD:` title line prepended to each.
 
 ## Sample Chunks
 
@@ -81,7 +43,7 @@ That your adviser's job is partly to know the exceptions to rules. Ask before as
 
      Milestone 3. -->
 
-**Chunk 1** — source: ``— produced by:``0.6
+**Chunk 1** — source: `thread_bike_commute.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
 THREAD: Is a bike worth it for a 20 minute walk commute?
@@ -99,7 +61,7 @@ Both true. I keep a cheap bike for September to November and walk the rest of th
 If you do get one, the campus does free registration and it's the only reason I got mine back after it was taken.
 ```
 
-**Chunk 2** — source: ``— produced by:``1
+**Chunk 2** — source: `thread_first_year_regret.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
 THREAD: What do you wish you'd known in first year?
@@ -120,7 +82,7 @@ Honestly: that nobody is watching as closely as you think. I spent a year worrie
 That your adviser's job is partly to know the exceptions to rules. Ask before assuming a deadline is fixed.
 ```
 
-**Chunk 3** — source: ``— produced by:``0.4
+**Chunk 3** — source: `thread_laundry_timing.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
 THREAD: When is laundry actually free in the dorms?
@@ -135,7 +97,7 @@ Depends heavily on your building. Morrow has more machines per person than Fenwi
 The app that shows machine availability is wrong about half the time. It reports a machine as free for a few minutes after it finishes but before someone unloads it.
 ```
 
-**Chunk 4** — source: ``— produced by:``0.2
+**Chunk 4** — source: `thread_printing.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
 THREAD: Is the printing quota enough?
@@ -147,7 +109,7 @@ For most people yes. $30 is about 600 pages black and white. It's the colour pri
 Doesn't roll over between semesters. Print your readings in December rather than losing it.
 ```
 
-**Chunk 5** — source: ``— produced by:``0.6
+**Chunk 5** — source: `thread_roommate_conflict.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
 THREAD: Roommate situation isn't working. What now?
@@ -164,30 +126,34 @@ Write down specifics before the meeting. 'It's not working' is hard to act on; '
 
 ## Sample Answer
 
-<!-- One complete question and answer, pasted as text, with the source line
-     visible. Milestone 4. -->
-
-**Question:**
+**Question:** When are the dorm laundry machines actually free?
 
 **Answer:**
 
 ```
+  (best distance 0.270, cutoff 0.65)
+
+Laundry is actually free in all buildings on Tuesday and Wednesday mornings.
+
+Source: thread_laundry_timing.txt
 ```
 
-**My relevance cutoff:**
+**My relevance cutoff:** 0.65
 
-<!-- The number you set in config.py, and how you got there.
-
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
-
-     Milestone 4. -->
+I ran my five test questions and the five OUT_OF_SCOPE questions through `python app.py retrieve` and wrote down the best distance for each. The two groups came out with a clean gap: everything my corpus covers scored 0.26–0.40, and everything it doesn't scored 0.83–0.95, with nothing in between. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides: low enough that no junk question gets through, high enough that a slightly awkwardly worded real question still passes. I originally had it at 0.85, which turned out to be too loose: two of the five out-of-scope questions would have gotten past the gate and reached the model.
 
 | Question | In corpus? | Best distance |
 | -------- | ---------- | ------------- |
-|          |            |               |
+| How much RAM do students say you actually need for CS courses? | yes | 0.259 |
+| When are the dorm laundry machines actually free? | yes | 0.270 |
+| How long do I have to change my meal plan tier after the semester starts? | yes | 0.285 |
+| Which cafe do students recommend as a study spot before 10am? | yes | 0.365 |
+| How many black and white pages does the printing quota cover? | yes | 0.399 |
+| What is the recommended dosage of ibuprofen for a headache? | no | 0.828 |
+| How do I write a for loop in Rust? | no | 0.871 |
+| How do I change the oil in a diesel engine? | no | 0.930 |
+| What is the capital of Mongolia? | no | 0.948 |
+| Who won the 1994 World Cup? | no | 0.952 |
 
 ## How I Used AI
 
@@ -200,9 +166,9 @@ Write down specifics before the meeting. 'It's not working' is hard to act on; '
 
      Milestone 5. -->
 
-**1.**
+**1.** I had set my relevance cutoff to 0.85 and asked Claude whether it was right. It ran my five out-of-scope questions through retrieval and showed me that two of them (ibuprofen at 0.79, the World Cup at 0.83 on the old index) came in under 0.85, meaning the gate would have passed them through to the model, so my own criterion 3 would have failed at 3 of 5. I moved the cutoff to 0.65, inside the gap between my two groups of distances, and re-verified that all five junk questions now get refused.
 
-**2.**
+**2.** I asked Claude to explain `chunker.py` line by line and suggest improvements. It suggested one thread = one chunk and backed it up by measuring my corpus (23 threads, 317–793 characters each, all under the embedding model's input limit). I also learned from the retrieval output that my old index had chunks cut mid-word. The index was stale from an earlier chunk-size experiment, and I hadn't realized the index only changes when you rebuild it. After changing the chunker I re-indexed and re-ran all ten retrieve commands to confirm the distances myself; the out-of-scope group actually moved further away (0.79 → 0.83 at the closest).
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
