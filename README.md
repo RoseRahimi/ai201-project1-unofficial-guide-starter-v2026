@@ -280,23 +280,48 @@ commuting daily; otherwise, it is not worth bothering.
 
 ## Diagnoses
 
-<!-- For each miss: which stage caused it, and how. The stage alone isn't
-     enough — you need the mechanism.
+**The one miss: criterion 3 as revised.** The gate refuses only 1 of 5
+campus-adjacent questions my documents don't cover (gym hours 0.638, grade
+appeals 0.639, dorm food 0.606, overnight parking 0.538, all under the 0.65
+cutoff; only the housing lottery at 0.725 gets refused).
 
-     Not a diagnosis: "Question 3 didn't work."
-     A diagnosis:     "Question 3 asks about laundry costs. The answer is in
-                       one sentence that got split across two chunks, so
-                       neither chunk on its own contains it."
+**Stage: the gate, fed by embedding distances.** Not loading, chunking, or
+generation. I checked by working backwards: for the gym question none of the
+five retrieved chunks contains anything about a gym, so the problem is before
+generation, and retrieval itself did nothing wrong, it returned the closest
+chunks that exist. The failure is that the gate let the question through.
 
-     The five stages: loading → chunking → embedding → retrieval → generation.
+**Mechanism:** embedding distance measures how topically close a question is
+to my corpus, not whether the corpus answers it. A question about gym hours
+shares the campus vocabulary of my threads (buildings, schedules, student
+life), so it lands at 0.638, while truly alien questions land at 0.83 plus.
+And the gap I would need does not exist: "What do students say about Fenwick?"
+is answerable from three threads and scores 0.628, which is further than the
+unanswerable overnight parking question at 0.538. Answerable and unanswerable
+campus questions overlap on this one number, so no cutoff separates them.
+Lowering the cutoff to refuse the gym question would also refuse the Fenwick
+question.
 
-     Look for a pattern. If three misses all ask about numbers, that's one
-     problem, not three.
+**Pattern:** all four leaked questions are the same single problem, campus
+vocabulary without campus answers, not four separate failures.
 
-     Missed nothing? Say so, then say honestly whether your targets were set
-     low, and which one you'd tighten and to what.
+**What actually happens after the leak:** I asked two of the leaked questions
+end to end. Both times the model itself refused ("I do not have enough
+information to answer this question"), because the grounding instruction in
+`generate.py` tells it to answer only from the documents. So the second
+defence layer currently catches what the gate misses. The cost of the miss is
+a wasted model call per leaked question and the fact that I am relying on the
+model following instructions, which gate.py's own comments warn is the less
+reliable layer.
 
-     Milestone 3. -->
+**On the five original criteria, which were all MET:** honestly, criteria 1,
+2, and 4 were never in danger, because with one chunk per thread and only 23
+threads, retrieval is close to a lookup table. The safe one was criterion 3,
+and the revision above is the tightening: measured against campus-adjacent
+questions it goes from unmissable to 1 of 5. If I tightened one more, it would
+be criterion 2, from "names a source" to "names the correct source", which my
+before run already satisfies 15 of 15 but which an answer could fail while
+passing the current wording.
 
 ## The Improvement
 
