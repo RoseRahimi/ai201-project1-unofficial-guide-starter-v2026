@@ -325,12 +325,17 @@ passing the current wording.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** one number: the relevance cutoff in config.py, from 0.65
+to 0.6.
 
-**Why I picked it:**
-
-<!-- Connect it to a specific diagnosis above in one sentence. If you can't,
-     you picked a fix because it sounded impressive. -->
+**Why I picked it:** my diagnosis showed the gate letting through 4 of 5
+campus-adjacent questions my corpus can't answer, and three of those four
+(gym 0.638, grade appeals 0.639, dorm food 0.606) sit between 0.6 and 0.65,
+so this is the change the diagnosis directly names. Before making it I wrote
+down why it might not work: it moves the line instead of fixing the mechanism
+(overnight parking at 0.538 still leaks whatever I do), and it sacrifices
+answerable aggregation questions like the Fenwick one at 0.628, which now get
+refused.
 
 ### Run Log — After
 
@@ -339,20 +344,37 @@ passing the current wording.
 
 | Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
 | -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
-| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
-| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
-| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
-| 4.                                     |        |       |       |       |         |
-| 5.                                     |        |       |       |       |         |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 2. Every answer names a source         | 5 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 4. Every chunk is one complete thread  | 5 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 5. Conflicting replies shown both ways | 2 of 3 | 3/3   | 2/3   | 2/3   | MET     |
+
+The evidence files are `results/run_2026-10-11_1429_after.md` and
+`results/run_2026-10-11_1429_criterion5_after.md`. Criterion 5's 2/3 cells are
+me scoring the bike answers strictly, same as in the before run: two of them
+led with "yes" and kept the other side as caveats.
+
+**And the revised criterion 3**, the one the improvement was aimed at,
+measured against the five campus-adjacent questions from the Diagnoses
+section (one deterministic pass, like the gate itself):
+
+| Measurement | Before (cutoff 0.65) | After (cutoff 0.6) | Target | Verdict |
+| --- | --- | --- | --- | --- |
+| Gate refuses campus-adjacent uncovered questions | 1 of 5 | 4 of 5 | 4 of 5 | MET |
 
 **Did it help?**
 
-<!-- Say plainly whether it did, and how you know. If it made things worse,
-     say that — a change that backfired, honestly reported, earns full credit
-     and is more interesting than one that worked. What matters is that you can
-     tell.
-
-     Milestone 4. -->
+Yes, and I can say how I know in one sentence: the revised criterion 3 went
+from 1 of 5 to 4 of 5 refused, and no other criterion moved. My five real
+questions all score 0.399 or lower, so the lower cutoff never touches them
+(same distances, same 15 passes as before). The two costs I predicted both
+showed up and are worth it: the overnight parking question (0.538) still gets
+past the gate and is still caught by the grounding instruction instead, and
+the answerable Fenwick-style aggregation question (0.628) is now refused,
+which I'm accepting because none of my criteria cover aggregation questions
+and the gate protecting against confident wrong answers matters more than
+answering a question type I never promised.
 
 ## What's Still Broken
 
