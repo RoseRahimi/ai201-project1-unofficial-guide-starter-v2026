@@ -170,6 +170,10 @@ I ran my five test questions and the five OUT_OF_SCOPE questions through `python
 
 **2.** I asked Claude to explain `chunker.py` line by line and suggest improvements. It suggested one thread = one chunk and backed it up by measuring my corpus (23 threads, 317–793 characters each, all under the embedding model's input limit). I also learned from the retrieval output that my old index had chunks cut mid-word. The index was stale from an earlier chunk-size experiment, and I hadn't realized the index only changes when you rebuild it. After changing the chunker I re-indexed and re-ran all ten retrieve commands to confirm the distances myself; the out-of-scope group actually moved further away (0.79 → 0.83 at the closest).
 
+**3.** (unit 2) My scorer wasn't producing verdicts and I asked Claude why. It found two problems I'd missed: my file was named `score.py` but `run_eval.py` imports `scorer`, and my one-liner had a parenthesis bug, `(answer or "".lower())` lowercases the empty string instead of the answer, so "tuesday" could never match "Tuesday". It rewrote `judge` with the fix plus refusal handling and tested it against six known answers before I re-ran the eval.
+
+**4.** (unit 2) I asked Claude to read all 23 threads and find edge cases worth testing. It measured campus-adjacent questions my corpus can't answer and found they score 0.54 to 0.64, under my then cutoff of 0.65, while my out-of-scope test set scored 0.83 plus. That became my criterion 3 revision, my diagnosis, and my improvement. I also used the "argue the opposite verdict" exercise from the milestone on my five verdicts; the argument against criterion 5 was good (one bike answer led with "yes"), so I re-scored it strictly and reported the 2/3 runs.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
@@ -378,17 +382,56 @@ answering a question type I never promised.
 
 ## What's Still Broken
 
-<!-- For each criterion still missed after your fix: what you'd do about it,
-     and why you stopped where you did.
+**The revised criterion 3 is at 4 of 5, not 5 of 5.** The overnight parking
+question (0.538) still gets past the gate, and no cutoff can stop it: it
+scores closer to my corpus than an answerable question does (the Fenwick
+aggregation question at 0.628). What I'd do about it: stop trying to fix this
+with the distance threshold, because the mechanism (embedding distance measures
+topic, not answerability) doesn't give me the signal I need. The honest fix is
+to treat the grounding instruction as the formal second layer and measure its
+refusal reliability the way I measure everything else, three runs per leaked
+question, since gate.py's comments warn that asking the model nicely is the
+less reliable layer and so far I've only seen it refuse a handful of times.
+Why I stopped: the milestone said one change, the leak is currently caught by
+that second layer in every test I ran, and a proper fix needs a different
+mechanism, not another number.
 
-     "I ran out of time" is fine if it's true. Pretending nothing is left is
-     not.
+**The improvement has a cost I accepted but didn't fix.** Answerable
+aggregation questions like "What do students say about Fenwick?" (0.628) are
+now refused by the lower cutoff. What I'd do about it: a gate that looks at
+more than the single best distance, for example how many of the top chunks
+are close, since the Fenwick question has three moderately close threads
+while the gym question has none. Why I stopped: none of my five criteria
+cover aggregation questions, so fixing this would be improving something I
+never promised while the unit asked me to fix something I did.
 
-     Milestone 5. -->
+**Criterion 5 is met but drifting.** Two of three bike runs in the after log
+led with "yes" and kept the other side as caveats, which I scored as fails
+under my strict reading. What I'd do about it: add one rule to the grounding
+instruction in generate.py, "if the replies disagree, present both sides
+instead of picking one". Why I stopped: the criterion was met, and adding a
+prompt change on top of the cutoff change would have been a second change in
+the same measurement, which is exactly what the milestone said not to do.
 
 ## What I'd Do Differently
 
-<!-- Knowing what you know now — which of your five criteria would you write
-     differently, and why?
+**Criterion 3 taught me the big lesson: test with near misses, not easy
+misses.** I wrote my out-of-scope questions from a different world entirely
+(Mongolia, Rust, diesel engines) and they all scored 0.83 plus, so the
+criterion could not fail. The questions that actually probe the gate are
+campus questions with no answer in the corpus, which score 0.54 to 0.64,
+right at the cutoff. Next unit I'd write the out-of-scope set as the five
+nearest misses I can think of, not the five farthest.
 
-     Milestone 5. -->
+**Criterion 5 I'd define precisely enough to score the same way twice.**
+"Reflects both positions" turned out to be a judgment call: I scored answers
+that led with "yes" but kept the downsides as caveats differently on
+different passes before forcing myself to a strict rule. Next time I'd write
+the rule into the criterion itself, something like "the answer does not open
+with an unqualified yes or no when the thread's replies disagree".
+
+**Criteria 1, 2, and 4 I'd tighten, because they were nearly unmissable.**
+With 23 whole-thread chunks, retrieval is close to a lookup table. I'd move
+criterion 1 to "the answer-bearing chunk is the number one result" and
+criterion 2 to "names the correct source, not merely a source". Both happen
+to hold in my runs, so they'd be real targets rather than safe ones.
