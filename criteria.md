@@ -22,7 +22,7 @@ pipeline earns credit; *"80% seemed reasonable"* does not.
 For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
-**Why this target:** tested all my 5 questions and each of them retrieves the right thread as the first result at distance of 0.26-0.40. because the corpus of advice threads has 23 threads and one chunck per topic. if a wording in question drifts then there is no second chunck to fall back on. 4 out of 5 lives room for one wording mismatch.
+**Why this target:** tested all my 5 questions and each of them retrieves the right thread as the first result at distance of 0.23-0.40. because the corpus of advice threads has 23 threads and one chunck per topic. if a wording in question drifts then there is no second chunck to fall back on. 4 out of 5 lives room for one wording mismatch.
 
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
@@ -51,7 +51,23 @@ in at least 4 of 5 tries.
      what happened into your run log. Swap them for your own if you'd rather —
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
-**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.26-0.40 and the 5 out of scope questions came back at 0.83-0.95, so there was a clean gap between 0.40 and 0.83 with no overlap at all. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.83) is still the nearest thing to the gap and a differently worded junk question could land closer.
+**Why this target:** I measured both groups with the retrieve command. my 5 real questions came back at 0.23-0.40 and the 5 out of scope questions came back at 0.83-0.95, so there was a clean gap between 0.40 and 0.83 with no overlap at all. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides. the target is 4 of 5 instead of 5 of 5 because the closest out of scope question (ibuprofen, 0.83) is still the nearest thing to the gap and a differently worded junk question could land closer.
+
+> **Revised in unit 2:** When I ask a campus-adjacent question my documents
+> don't cover (one that sounds like my corpus but has no answer in it, like
+> "What time does the gym open?"), the gate stops it in at least 4 of 5 tries.
+>
+> **Why revised:** the original measured the wrong thing. The five OUT_OF_SCOPE
+> questions are from a different world entirely and score 0.83-0.95, so the
+> criterion could not fail no matter what cutoff I picked. But the claim is
+> about "questions my documents clearly don't cover", and the dangerous ones
+> are campus questions with no answer in the corpus. I measured five of those:
+> gym hours 0.638, grade appeals 0.639, dorm food 0.606, overnight parking
+> 0.538, housing lottery 0.725. At my 0.65 cutoff the gate refuses only 1 of 5.
+> So the original criterion was passing while the thing it claimed to measure
+> was failing. The original verdict stands as MET against its own question set;
+> the revised version is currently MISSED, and that miss is what unit 2's
+> improvement targets.
 
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->

@@ -140,14 +140,14 @@ Source: thread_laundry_timing.txt
 
 **My relevance cutoff:** 0.65
 
-I ran my five test questions and the five OUT_OF_SCOPE questions through `python app.py retrieve` and wrote down the best distance for each. The two groups came out with a clean gap: everything my corpus covers scored 0.26–0.40, and everything it doesn't scored 0.83–0.95, with nothing in between. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides: low enough that no junk question gets through, high enough that a slightly awkwardly worded real question still passes. I originally had it at 0.85, which turned out to be too loose: two of the five out-of-scope questions would have gotten past the gate and reached the model.
+I ran my five test questions and the five OUT_OF_SCOPE questions through `python app.py retrieve` and wrote down the best distance for each. The two groups came out with a clean gap: everything my corpus covers scored 0.23–0.40, and everything it doesn't scored 0.83–0.95, with nothing in between. I put the cutoff at 0.65 because it sits in the middle of that gap with margin on both sides: low enough that no junk question gets through, high enough that a slightly awkwardly worded real question still passes. I originally had it at 0.85, which turned out to be too loose: two of the five out-of-scope questions would have gotten past the gate and reached the model.
 
 | Question | In corpus? | Best distance |
 | -------- | ---------- | ------------- |
+| Is it worth getting a bike to shorten my walk to campus? | yes | 0.233 |
 | How much RAM do students say you actually need for CS courses? | yes | 0.259 |
-| When are the dorm laundry machines actually free? | yes | 0.270 |
-| How long do I have to change my meal plan tier after the semester starts? | yes | 0.285 |
-| Which cafe do students recommend as a study spot before 10am? | yes | 0.365 |
+| How many courses can I take pass fail in a year? | yes | 0.274 |
+| What time of week is it easiest to find an open washing machine in the dorms? | yes | 0.366 |
 | How many black and white pages does the printing quota cover? | yes | 0.399 |
 | What is the recommended dosage of ibuprofen for a headache? | no | 0.828 |
 | How do I write a for loop in Rust? | no | 0.871 |
@@ -197,15 +197,67 @@ I ran my five test questions and the five OUT_OF_SCOPE questions through `python
 
 | Criterion                              | Target | Run 1 | Run 2 | Run 3 | Verdict |
 | -------------------------------------- | ------ | ----- | ----- | ----- | ------- |
-| 1. Retrieved chunk contains the answer | 4 of 5 |       |       |       |         |
-| 2. Every answer names a source         | 5 of 5 |       |       |       |         |
-| 3. Gate stops out-of-corpus questions  | 4 of 5 |       |       |       |         |
-| 4.                                     |        |       |       |       |         |
-| 5.                                     |        |       |       |       |         |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 2. Every answer names a source         | 5 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 3. Gate stops out-of-corpus questions  | 4 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 4. Every chunk is one complete thread  | 5 of 5 | 5/5   | 5/5   | 5/5   | MET     |
+| 5. Conflicting replies shown both ways | 2 of 3 | 3/3   | 3/3   | 2/3   | MET     |
 
-<!-- Underneath, paste the REAL output for each criterion from one of your
-     runs — the actual text your system produced, not a description of it.
-     Name the file and function that produced it. -->
+The evidence files are `results/run_2026-10-11_1411_before.md` (criteria 1 to 3,
+scored by `scorer.py::judge`) and `results/run_2026-10-11_1422_criterion5_before.md`
+(criterion 5). Criteria 3 and 4 are measured in one deterministic pass, so the
+same number fills all three run columns. Criterion 1 counts whether the sources
+retrieved for each question include the thread that holds the answer, and
+retrieval is deterministic too, so its runs match; criteria 2 and 5 depend on
+the generated answer and genuinely could have varied, they just didn't.
+
+**Criterion 1** (retrieval, from `run_eval.py::main` via `store.py::search`): for
+every question the retrieved sources include the right thread, for example:
+
+```
+### What time of week is it easiest to find an open washing machine in the dorms? — run 1
+- Best distance: 0.3658 (passed the gate)
+- Sources retrieved: thread_commuting.txt, thread_late_work.txt, thread_laundry_timing.txt, thread_sleep_schedule.txt, thread_study_spots.txt
+```
+
+**Criterion 2** (source naming, answer produced by `generate.py::answer_from_chunks`):
+all 15 answers name their source file. One of them:
+
+```
+The printing quota of $30 covers about 600 black and white pages. (Source: thread_printing.txt)
+```
+
+**Criterion 3** (the gate, from `run_eval.py::check_out_of_scope`, cutoff 0.65):
+
+```
+| Out-of-scope question | Best distance | Gate |
+|---|---|---|
+| What is the capital of Mongolia? | 0.948 | refused |
+| How do I change the oil in a diesel engine? | 0.930 | refused |
+| Who won the 1994 World Cup? | 0.952 | refused |
+| What is the recommended dosage of ibuprofen for a headache? | 0.828 | refused |
+| How do I write a for loop in Rust? | 0.871 | refused |
+```
+
+**Criterion 4** (chunks, from `python app.py chunks -n 5`, chunks produced by
+`chunker.py::split_documents`): all five sampled chunks are complete threads
+starting with their title line:
+
+```
+Chunk 1  |  source: thread_bike_commute.txt#0  |  produced by: chunker.py::split_documents
+THREAD: Is a bike worth it for a 20 minute walk commute?
+```
+
+**Criterion 5** (conflicting replies, questions from `questions.py::CONFLICT_QUESTIONS`,
+answers by `generate.py::answer_from_chunks` with cache off): parking and textbook
+kept both sides in every run; the bike answer did too in runs 1 and 2 but led with
+"yes" in run 3, which I scored as a fail, leaving run 3 at 2 of 3. One of the
+clean ones:
+
+```
+According to thread_parking.txt, a west permit is worth getting if you are
+commuting daily; otherwise, it is not worth bothering.
+```
 
 ## Verdicts
 
@@ -220,11 +272,11 @@ I ran my five test questions and the five OUT_OF_SCOPE questions through `python
 
 | # | Criterion | Verdict | How I decided |
 | - | --------- | ------- | ------------- |
-| 1 |           |         |               |
-| 2 |           |         |               |
-| 3 |           |         |               |
-| 4 |           |         |               |
-| 5 |           |         |               |
+| 1 | Retrieved chunk contains the answer | MET | the sources retrieved for every question include the thread that holds the answer, in all three runs (5/5, target 4/5). retrieval is deterministic, so one check per question settles it. |
+| 2 | Every answer names a source | MET | I read all 15 answers in the before log rather than trusting the scorer for this one; every single answer names a thread file (15/15, target all). |
+| 3 | Gate stops out-of-corpus questions | MET | the gate refused all 5 OUT_OF_SCOPE questions, closest at 0.828 against the 0.65 cutoff. but this verdict is softer than it looks: the question set made it unmissable, see the revision under criterion 3 in criteria.md. |
+| 4 | Every chunk is one complete thread | MET | all 5 sampled chunks start with their THREAD: line and end at the thread's end. the chunker emits whole files, so a broken chunk is impossible by construction, which is why one sample pass is enough. |
+| 5 | Conflicting replies shown both ways | MET | parking and textbook answers kept the disagreement in all runs. bike run 3 was borderline, it led with "yes" and kept the downsides as caveats, so I scored it strictly as a fail, and the run still comes out 2 of 3, which meets the target. |
 
 ## Diagnoses
 
